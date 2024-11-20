@@ -39,8 +39,10 @@ def scrapeGpuMetricsForNamespacesSelenium(namespaces, retries=2):
                 gpu_data = []
                 rows = soup.find_all("div", class_="css-8fjwhi-row")
                 if not rows:
-                    print(f"No rows found for namespace '{namespace}' on attempt {attempt + 1}")
-                    continue  # Retry if no rows found
+                    print(f"Namespace '{namespace}' has no monitored instances to scrape.")
+                    results[namespace] = {"message": "No monitored instances to scrape"}
+                    success = True  # Mark as success since this is an expected case
+                    break
 
                 for row in rows:
                     columns = row.find_all("div", class_=lambda value: value and "cellContainerOverflow" in value)
@@ -75,7 +77,7 @@ def scrapeGpuMetricsForNamespacesSelenium(namespaces, retries=2):
                 driver.save_screenshot(f"{namespace}_error_attempt_{attempt + 1}.png")
                 time.sleep(5)  # Small delay before retry
 
-        if not success:
+        if not success and namespace not in results:
             results[namespace] = {"message": "Error while scraping this namespace"}
 
     driver.quit()
