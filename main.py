@@ -4,11 +4,13 @@ from monitors.deploymentMonitor import monitorDeployments
 
 def main():
     print("Starting Nautilus Bot...")
+
+    namespaces = ["gilpin-lab", "aiea-interns", "aiea-auditors"]
     
     # Monitor resources
-    podData = monitorPods()
-    jobData = monitorJobs()
-    deploymentData = monitorDeployments()
+    podData = monitorPods(namespaces)
+    jobData = monitorJobs(namespaces)
+    deploymentData = monitorDeployments(namespaces)
 
     # Print results
     print("Pods:", podData)
