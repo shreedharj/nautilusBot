@@ -3,13 +3,12 @@ from utils.kubeClient import loadKubeConfig
 from utils.resourceUtil import calculateAge
 from checks.jobChecks import checkJobViolations
 
-def monitorJobs():
+def monitorJobs(namespaces):
     """Monitor jobs and their resource usage."""
     loadKubeConfig()
     batchV1 = client.BatchV1Api()
     jobData = []
 
-    namespaces = ["gilpin-lab", "aiea-interns", "aiea-auditors"]
     for namespace in namespaces:
         jobs = batchV1.list_namespaced_job(namespace)
         for job in jobs.items:

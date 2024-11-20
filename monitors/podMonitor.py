@@ -3,13 +3,12 @@ from utils.kubeClient import loadKubeConfig
 from utils.resourceUtil import calculateAge, getPodUtilization
 from checks.podChecks import checkPodViolations
 
-def monitorPods():
+def monitorPods(namespaces):
     """Monitor pods and their resource usage."""
     loadKubeConfig()
     v1 = client.CoreV1Api()
     podData = []
 
-    namespaces = ["gilpin-lab", "aiea-interns", "aiea-auditors"]
     for namespace in namespaces:
         pods = v1.list_namespaced_pod(namespace)
         for pod in pods.items:
