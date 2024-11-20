@@ -1,6 +1,6 @@
 from kubernetes import client
 from utils.kubeClient import loadKubeConfig
-from monitors.resourceUtil import calculateAge, getPodUtilization
+from utils.resourceUtil import calculateAge, getPodUtilization
 from checks.podChecks import checkPodViolations
 
 def monitorPods():

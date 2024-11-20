@@ -1,6 +1,6 @@
 from kubernetes import client
 from utils.kubeClient import loadKubeConfig
-from monitors.resourceUtil import calculateAge
+from utils.resourceUtil import calculateAge
 from checks.jobChecks import checkJobViolations
 
 def monitorJobs():

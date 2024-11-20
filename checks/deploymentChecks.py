@@ -1,4 +1,4 @@
-from monitors.resourceUtil import parseCpu, parseMemory
+from utils.resourceUtil import parseCpu, parseMemory
 
 def checkDeploymentViolations(deployment, deploymentAge):
     """Check violations for a deployment."""

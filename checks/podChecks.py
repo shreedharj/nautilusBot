@@ -1,4 +1,4 @@
-from monitors.resourceUtil import parseCpu, parseMemory
+from utils.resourceUtil import parseCpu, parseMemory
 
 def checkPodViolations(pod, podAge, requestedResources, utilizedResources):
     """Check violations for a pod."""
