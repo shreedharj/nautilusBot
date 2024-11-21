@@ -199,13 +199,13 @@ The following tools and libraries are required to run the Nautilus Bot:
 
 ### 📄 `requirements.txt`
 Here’s the full list of dependencies to install using `pip`:
-    beautifulsoup4==4.12.2
-    kubernetes==26.1.0
-    selenium==4.11.2
-    webdriver-manager==3.8.6
-    requests==2.31.0
-    certifi==2023.7.22
-    urllib3==2.0.7 
+1. beautifulsoup4==4.12.2
+2. kubernetes==26.1.0
+3. selenium==4.11.2
+4. webdriver-manager==3.8.6
+5. requests==2.31.0
+6. certifi==2023.7.22
+7. urllib3==2.0.7 
 
 
 ---
