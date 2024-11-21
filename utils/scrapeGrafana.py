@@ -5,6 +5,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 import time
 import traceback
@@ -33,7 +34,7 @@ def scrapeGpuMetrics(namespaces, retries=2):
     results = {}
 
     chrome_options = Options()
-    # chrome_options.add_argument("--headless")  # Enable headless mode; remove for debugging
+    chrome_options.add_argument("--headless")  # Enable headless mode; remove for debugging
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--window-size=1920,1080")
@@ -55,18 +56,23 @@ def scrapeGpuMetrics(namespaces, retries=2):
                 # Scroll to the bottom to ensure all elements are rendered
                 scrollToBottom(driver)
 
+                # Check if "No data" is present
+                try:
+                    no_data_element = WebDriverWait(driver, 10).until(
+                        EC.presence_of_element_located((By.CLASS_NAME, "css-1k75hwm"))
+                    )
+                    if "No data" in no_data_element.text:
+                        print(f"Namespace '{namespace}' has no monitored instances to scrape.")
+                        results[namespace] = {"message": "No monitored instances to scrape"}
+                        success = True
+                        break
+                except TimeoutException:
+                    pass
+
                 # Wait dynamically for rows or specific identifiers to load
-                WebDriverWait(driver, 20).until(
+                WebDriverWait(driver, 10).until(
                     EC.presence_of_all_elements_located((By.CLASS_NAME, "css-8fjwhi-row"))
                 )
-
-                rows = driver.find_elements(By.CLASS_NAME, "css-8fjwhi-row")
-                if not rows:
-                    print(f"Namespace '{namespace}' has no monitored instances to scrape.")
-                    with open(f"debug_{namespace}_page.html", "w") as f:
-                        f.write(driver.page_source)
-                    results[namespace] = {"message": "No monitored instances to scrape"}
-                    continue
 
                 # Parse the rendered HTML
                 soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -103,11 +109,10 @@ def scrapeGpuMetrics(namespaces, retries=2):
                 success = True
                 break  # Exit retry loop if successful
 
+            except TimeoutException:
+                print(f"Timeout while scraping namespace '{namespace}' on attempt {attempt + 1}")
             except Exception as e:
-                print(f"Error while scraping namespace '{namespace}' on attempt {attempt + 1}: {e}")
-                # driver.save_screenshot(f"{namespace}_error_attempt_{attempt + 1}.png")
-                traceback.print_exc()
-                time.sleep(5)  # Small delay before retry
+                print(f"Error while scraping namespace '{namespace}' on attempt {attempt + 1}: {traceback.format_exc()}")
 
         if not success and namespace not in results:
             results[namespace] = {"message": "Error while scraping this namespace"}
