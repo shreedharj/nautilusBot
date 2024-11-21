@@ -4,6 +4,12 @@ def checkPodViolations(pod, podAge, requestedResources, utilizedResources):
     """Check violations for a pod."""
     violations = []
     
+    # GPU Check: Requesting more than 2 GPUs
+    if "nvidia.com/gpu" in requestedResources:
+        requestedGpus = int(requestedResources["nvidia.com/gpu"])
+        if requestedGpus > 2:
+            violations.append(f"Requested GPUs exceed 2 (requested: {requestedGpus})")
+
     # GPU Checks
     if "gpuUtilizationPercentage" in utilizedResources:
         gpuUtilizationPercentage = int(utilizedResources["gpuUtilizationPercentage"].replace("%", ""))
