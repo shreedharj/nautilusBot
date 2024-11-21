@@ -5,11 +5,10 @@ def checkPodViolations(pod, podAge, requestedResources, utilizedResources):
     violations = []
     
     # GPU Checks
-    if "nvidia.com/gpu" in requestedResources:
-        requestedGpus = int(requestedResources["nvidia.com/gpu"])
-        utilizedGpus = int(utilizedResources.get("gpu", 0))  # Placeholder for GPU metric
-        if utilizedGpus < 0.1 * requestedGpus:
-            violations.append(f"GPU underutilized (<10% of requested)")
+    if "gpuUtilizationPercentage" in utilizedResources:
+        gpuUtilizationPercentage = int(utilizedResources["gpuUtilizationPercentage"].replace("%", ""))
+        if gpuUtilizationPercentage < 10: 
+            violations.append(f"GPU underutilized (<10% of capacity)")
 
     # CPU Checks
     if "cpu" in requestedResources and "cpu" in utilizedResources:
