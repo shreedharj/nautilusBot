@@ -5,8 +5,8 @@ def checkDeploymentViolations(deployment, deploymentAge):
     violations = []
     
     # Age Check
-    if deploymentAge > 14:
-        violations.append("Deployment older than 2 weeks")
+    if deploymentAge > 12:
+        violations.append("Deployment approaching 2 weeks age. Address this soon.")
     
     # Replicas Check
     if deployment.status.ready_replicas == 0:

@@ -3,8 +3,8 @@ def checkJobViolations(job, jobAge):
     violations = []
     
     # Age Check
-    if jobAge > 14:
-        violations.append("Job older than 2 weeks")
+    if jobAge > 12:
+        violations.append("Job approaching 2 weeks age. Address this soon.")
     
     # Failed Status Check
     if job.status.failed:
