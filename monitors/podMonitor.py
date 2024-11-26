@@ -2,6 +2,7 @@ from kubernetes import client
 from utils.kubeClient import loadKubeConfig
 from utils.resourceUtil import calculateAge, getPodUtilization
 from checks.podChecks import checkPodViolations
+from utils.logger import logger
 
 def monitorPods(namespaces, gpuMetrics):
     """Monitor pods and their resource usage."""
@@ -10,6 +11,7 @@ def monitorPods(namespaces, gpuMetrics):
     podData = []
 
     for namespace in namespaces:
+        logger.info(f"Monitoring pods in namespace '{namespace}'...")
         pods = v1.list_namespaced_pod(namespace)
         namesapceGpuMetrics = gpuMetrics.get(namespace, {}).get("gpuMetrics", [])
         for pod in pods.items:
@@ -17,12 +19,12 @@ def monitorPods(namespaces, gpuMetrics):
 
             # Skip non-Running pods
             if podStatus not in ["Running"]:
-                    print(f"Skipping pod '{pod.metadata.name}' in namespace '{namespace}' as it is not running (state: {podStatus})")
+                    logger.error(f"Skipping pod '{pod.metadata.name}' in namespace '{namespace}' as it is not running (state: {podStatus})")
                     continue
 
             # Skip pods in Error state
             if podStatus == "Error":
-                print(f"Skipping pod '{pod.metadata.name}' in namespace '{namespace}' as it is in Error state")
+                logger.error(f"Skipping pod '{pod.metadata.name}' in namespace '{namespace}' as it is in Error state")
                 continue
 
             podAge = calculateAge(pod.status.start_time)
@@ -39,13 +41,14 @@ def monitorPods(namespaces, gpuMetrics):
 
             # Skip pods where utilization cannot be retrieved
             if utilizedResources["cpu"] == "Unknown" or utilizedResources["memory"] == "Unknown":
-                print(f"Skipping pod '{pod.metadata.name}' in namespace '{namespace}' due to missing utilization data")
+                logger.error(f"Skipping pod '{pod.metadata.name}' in namespace '{namespace}' due to missing utilization data")
                 continue
 
             podData.append(
                 {
                     "namespace": namespace,
                     "name": pod.metadata.name,
+                    "uid": pod.metadata.uid,
                     "age": podAge,
                     "status": pod.status.phase,
                     "requestedResources": requestedResources,
@@ -55,4 +58,5 @@ def monitorPods(namespaces, gpuMetrics):
                     ),
                 }
             )
+        logger.info(f"Finished monitoring pods in namespace '{namespace}'.")
     return podData

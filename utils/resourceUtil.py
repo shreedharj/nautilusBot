@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 import subprocess
+from utils.logger import logger
 
 def calculateAge(startTime):
     """Calculate the age of a resource."""
@@ -18,10 +19,10 @@ def getPodUtilization(namespace, podName):
             _, cpuUsage, memoryUsage = lines[1].split()
             return {"cpu": cpuUsage, "memory": memoryUsage}
     except subprocess.CalledProcessError as e:
-        print(f"Warning: Pod '{podName}' not found in namespace '{namespace}'")
+        logger.error(f"Warning: Pod '{podName}' not found in namespace '{namespace}'")
         return {"cpu": "Unknown", "memory": "Unknown"}
     except ValueError:
-        print(f"Error parsing utilization for pod '{podName}' in namespace '{namespace}'")
+        logger.error(f"Error parsing utilization for pod '{podName}' in namespace '{namespace}'")
         return {"cpu": "Unknown", "memory": "Unknown"}
 
 
@@ -45,4 +46,5 @@ def parseMemory(memoryStr):
         return int(memoryStr)  # Treat as bytes if no unit is provided
     else:
         raise ValueError(f"Unsupported memory format: {memoryStr}")
+        logger.error(f"Unsupported memory format: {memoryStr}")
 

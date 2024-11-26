@@ -9,6 +9,7 @@ from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 import time
 import traceback
+from utils.logger import logger
 
 def scrollToBottom(driver):
     """Scroll to the bottom of the page to ensure all elements are rendered."""
@@ -44,8 +45,7 @@ def scrapeGpuMetrics(namespaces, retries=2):
 
     for namespace in namespaces:
         url = f"{base_url}{namespace}"
-        # print(f"Namespace: {namespace} - Attempting to scrape {url}")
-        print(f"Beginning '{namespace}' scrape...")
+        logger.info(f"Scraping namespace '{namespace}'...")
 
         success = False
         for attempt in range(retries):
@@ -62,7 +62,7 @@ def scrapeGpuMetrics(namespaces, retries=2):
                         EC.presence_of_element_located((By.CLASS_NAME, "css-1k75hwm"))
                     )
                     if "No data" in no_data_element.text:
-                        print(f"Namespace '{namespace}' has no monitored instances to scrape.")
+                        logger.error(f"Namespace '{namespace}' has no monitored instances to scrape.")
                         results[namespace] = {"message": "No monitored instances to scrape"}
                         success = True
                         break
@@ -110,14 +110,14 @@ def scrapeGpuMetrics(namespaces, retries=2):
                 break  # Exit retry loop if successful
 
             except TimeoutException:
-                print(f"Timeout while scraping namespace '{namespace}' on attempt {attempt + 1}")
+                logger.error(f"Timeout while scraping namespace '{namespace}' on attempt {attempt + 1}")
             except Exception as e:
-                print(f"Error while scraping namespace '{namespace}' on attempt {attempt + 1}: {traceback.format_exc()}")
+                logger.error(f"Error while scraping namespace '{namespace}' on attempt {attempt + 1}: {traceback.format_exc()}")
 
         if not success and namespace not in results:
             results[namespace] = {"message": "Error while scraping this namespace"}
 
-    print("Scrape complete.")
+    logger.info("Scrape complete.")
     driver.quit()
     return results
 

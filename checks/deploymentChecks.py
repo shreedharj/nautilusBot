@@ -1,4 +1,5 @@
 from utils.resourceUtil import parseCpu, parseMemory
+from utils.logger import logger
 
 def checkDeploymentViolations(deployment, deploymentAge):
     """Check violations for a deployment."""
@@ -6,10 +7,13 @@ def checkDeploymentViolations(deployment, deploymentAge):
     
     # Age Check
     if deploymentAge > 12:
-        violations.append("Deployment approaching 2 weeks age. Address this soon.")
+        message = "Deployment approaching 2 weeks age. Address this soon."
+        # logger.critical(f"Critical Violation for Deployment '{job.metadata.name}' in '{job.metadata.namespace}': {message}")
+        violations.append(message)
     
     # Replicas Check
     if deployment.status.ready_replicas == 0:
-        violations.append("Deployment has no ready replicas")
+        message = "Deployment has no ready replicas"
+        # logger.warning(f"Warning for Deployment '{job.metadata.name}' in '{job.metadata.namespace}': {message}")
     
     return violations
