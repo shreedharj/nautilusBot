@@ -4,6 +4,16 @@ from utils.resourceUtil import calculateAge, getPodUtilization
 from checks.podChecks import checkPodViolations
 from utils.logger import logger
 
+def getDeploymentForReplicaSet(replicaSetName, namespace):
+    """Retrieve the Deployment managing a given ReplicaSet."""
+    loadKubeConfig()
+    apps_v1 = client.AppsV1Api()
+    deployments = apps_v1.list_namespaced_deployment(namespace)
+    for deployment in deployments.items:
+        if deployment.metadata.name in replicaSetName:
+            return deployment.metadata.name
+    return None
+
 def monitorPods(namespaces, gpuMetrics):
     """Monitor pods and their resource usage."""
     loadKubeConfig()
@@ -31,7 +41,17 @@ def monitorPods(namespaces, gpuMetrics):
 
             # Check for Owner References
             owner = pod.metadata.owner_references[0] if pod.metadata.owner_references else None
-            ownerInfo = f"managed by {owner.kind} '{owner.name}'" if owner else "independent"
+            # ownerInfo = f"managed by {owner.kind} '{owner.name}'" if owner else "independent"
+            ownerInfo = "independent"
+            if owner:
+                if owner.kind == "ReplicaSet":
+                    deploymentName = getDeploymentForReplicaSet(owner.name, namespace)
+                    if deploymentName:
+                        ownerInfo = f"managed by Deployment '{deploymentName}'"
+                    else:
+                        ownerInfo = f"managed by ReplicaSet '{owner.name}'"
+                else:
+                    ownerInfo = f"managed by {owner.kind} '{owner.name}'"
 
             podAge = calculateAge(pod.status.start_time)
             requestedResources = pod.spec.containers[0].resources.requests or {}
