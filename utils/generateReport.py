@@ -1,7 +1,7 @@
 import os
 import json
 from datetime import datetime, timedelta
-from logger import logger
+from utils.logger import logger
 
 LOGS_DIR = "logs/dailyLogs"
 REPORTS_DIR = "reports"

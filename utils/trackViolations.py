@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime, timedelta
-from logger import logger
+from utils.logger import logger
 
 LOG_FILE = "logs/violations/violationsByUid.json"
 
