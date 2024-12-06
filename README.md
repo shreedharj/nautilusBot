@@ -9,7 +9,7 @@ This bot is tailored for labs and research groups using Nautilus resources, enab
 
 ## 🔧 Tools and Technologies Used
 
-- **Python**: Core programming language for scripting and automation.
+- **Python**: Used for scripting and automation.
 - **Selenium**: Used for web scraping data from Grafana dashboards.
 - **BeautifulSoup**: HTML parsing for extracting relevant metrics.
 - **Kubernetes Python Client**: Fetches pod details and resource metrics directly from the Kubernetes API.
@@ -39,24 +39,12 @@ This bot is tailored for labs and research groups using Nautilus resources, enab
      - `gilpin-lab`
      - `aiea-auditors`
      - `aiea-interns` (empty namespaces handled automatically).
-
----
-
-### 🚀 Planned Features
-1. **Enhanced Logging**:
+5. **Enhanced Logging**:
    - Centralized logs for scraping errors and warnings.
    - Clear metrics for resource violations.
-
-2. **Periodic Reports**:
+6. **Periodic Reports**:
    - Daily or weekly resource utilization summaries.
-   - PDF/CSV reports for lab members or administrators.
-
-3. **Alerts and Notifications**:
-   - Slack or Discord notifications for severe underutilization or resource wastage.
-   - Email alerts for violations.
-
-4. **Resource Cleanup**:
-   - Automatic deletion or notification of unused pods, deployments, and resources.
+   - PDF/CSV reports for lab members or admins.
 
 ---
 
@@ -136,45 +124,30 @@ This bot is tailored for labs and research groups using Nautilus resources, enab
 
 ---
 
-## 🌟 Future Features
+## 🌟 Features in Works
 
-1. **📜 Detailed Logging**:
-   - Implement logging mechanisms to capture detailed activity logs for all scraping and resource monitoring activities.
-   - Logs will include timestamps, namespace statuses, and error traces for debugging.
-
-2. **📊 Report Generation**:
-   - Generate periodic reports summarizing resource utilization for each namespace.
-   - Include graphs and tables for visual representation of data.
-
-3. **🚨 Alerts and Notifications**:
+1. **🚨 Alerts and Notifications**:
    - Send alerts to administrators for critical violations, such as:
      - Prolonged GPU underutilization.
      - Stopped or errored pods.
      - Overprovisioned resources.
    - Integrate with Slack, email, or other communication tools for notifications.
 
-4. **🧹 Resource Cleanup**:
+2. **🧹 Resource Cleanup**:
    - Introduce automated cleanup processes for underutilized or idle resources to optimize cluster performance.
 
-5. **🌐 Web Interface**:
-   - Create a dashboard for live monitoring of namespaces, pods, and resource metrics.
-
-6. **🔒 Enhanced Security**:
-   - Automatically update certificates when they expire.
-   - Implement OAuth2 or token-based authentication for improved security.
-
-7. **🤖 Jenkins/Container Integration**:
+3. **🤖 Jenkins/Container Integration**:
    - Deploy the bot on Jenkins or Docker for seamless automation.
    - Ensure compatibility with CI/CD pipelines.
 
-8. **📅 Scheduling**:
+4. **📅 Scheduling**:
    - Add functionality to schedule scraping at regular intervals without manual intervention.
 
-9. **📈 Resource Trend Analysis**:
+5. **📈 Resource Trend Analysis**:
    - Track historical resource utilization trends to identify patterns.
    - Predict resource needs using machine learning or heuristic methods.
 
-10. **⚙️ Customizable Configurations**:
+6. **⚙️ Customizable Configurations**:
     - Allow users to configure namespaces, thresholds, and alert conditions dynamically via a configuration file.
 
 ---
